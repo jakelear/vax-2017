@@ -1,0 +1,17 @@
+body {
+  font-family: sans-serif;
+}
+
+.original, .processed {
+  display: inline-block;
+  width: 100%;
+
+  video, canvas {
+    width: 100%;
+    height: auto;
+  }
+}
+
+video {
+  display: none;
+}
