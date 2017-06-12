@@ -1,13 +1,12 @@
 require("../assets/testgl.mp4");
 require("../assets/noise.png");
 
+import * as dat from './vendor/dat.gui';
 import Scene from './scene'
 
 var container = document.getElementById("container");
 var scene = Scene.start(container);
-
-var audiocheckbox = container.querySelector('#audio-control')
-audiocheckbox.addEventListener('change', onAudioCheck, false);
+var settings;
 
 /////////////////////////////
 /////////////////////////////
@@ -17,21 +16,25 @@ var meter = null;
 var WIDTH=500;
 var HEIGHT=50;
 var rafID = null;
-let audio_control = false;
-
-function onAudioCheck(e) {
-  if (e.target.checked) {
-    audio_control = true;
-  } else {
-    audio_control = false;
-    var range = document.getElementById("heartrate");
-    scene.sendAudio(range.value);
-  }
-};
 
 window.onload = function() {
+    // Setup DAT.GUI
+    var Controls = function() {
+      this.microphoneControl = false;
+      this.intensity = 0.00;
+      //this.play = function() { };
+    };
+
+    settings = new Controls();
+    var gui = new dat.GUI();
+    gui.add(settings, 'microphoneControl');
+    //gui.add(settings, 'play');
+    gui.add(settings, 'intensity', 0, 2).step(0.02);
 
 
+    // Eend DAT.GUI Setup
+
+    // Begin Web Audio Stuff
     // monkeypatch Web Audio
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
@@ -86,8 +89,10 @@ function gotStream(stream) {
 
 function drawLoop( time ) {
     //console.log(meter.volume);
-    if (audio_control) {
+    if (settings.microphoneControl) {
       scene.sendAudio(meter.volume * 4);
+    } else {
+      scene.sendIntensity(settings.intensity);
     }
 
     // set up the next visual callback
