@@ -7,7 +7,7 @@
 
     <div id="container">
       <!-- <video id="video" muted></video> -->
-      <video autoplay="true" controls="" id="video" loop="" muted class="player__video">
+      <video autoplay="true" controls="" id="video" loop class="player__video">
         <source src="assets/testgl.mp4" type="video/mp4">
       </video>
       <fieldset>
@@ -16,6 +16,10 @@
       <fieldset>
         <label for="audio-control">Control by Microphone</label>
         <input id="audio-control" type="checkbox">
+      </fieldset>
+      <fieldset>
+        <button id="start-record">Start</button>
+        <button id="stop-record">Stop</button>
       </fieldset>
     </div>
     <script>

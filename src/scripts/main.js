@@ -1,6 +1,8 @@
 require("../assets/testgl.mp4");
 require("../assets/noise.png");
 
+import RecordRTC from 'recordrtc'
+import CanvasRecorder from './vendor/CanvasRecorder'
 import Scene from './scene'
 
 var container = document.getElementById("container");
@@ -8,6 +10,31 @@ var scene = Scene.start(container);
 
 var audiocheckbox = container.querySelector('#audio-control')
 audiocheckbox.addEventListener('change', onAudioCheck, false);
+
+var startRecordBtn = container.querySelector('#start-record')
+startRecordBtn.addEventListener('click', startRecord, false);
+
+var stopRecordBtn = container.querySelector('#stop-record')
+stopRecordBtn.addEventListener('click', stopRecord, false);
+
+var canvas = document.querySelector('canvas');
+var recorder = new RecordRTC.CanvasRecorder(canvas, {
+    disableLogs: false
+});
+
+function startRecord() {
+  recorder.record();
+}
+
+function stopRecord() {
+  recorder.stop(function(blob) {
+    var url = URL.createObjectURL(blob);
+    window.open(url);
+  });
+}
+
+
+
 
 /////////////////////////////
 /////////////////////////////
