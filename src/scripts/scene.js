@@ -46,7 +46,7 @@ export default class Scene {
   }
 
   setupVideoTexture() {
-    this.video = this.container.querySelector('.player__video')
+    this.video = this.container.querySelector('#video')
     this.videoTexture = new THREE.Texture(this.video)
     this.videoTexture.minFilter = THREE.LinearFilter
     this.videoTexture.magFilter = THREE.LinearFilter
@@ -69,7 +69,7 @@ export default class Scene {
 
       underlay: {
         type: 't',
-        value: THREE.ImageUtils.loadTexture("/assets/noise.png")
+        value: THREE.ImageUtils.loadTexture("assets/noise.png")
       },
 
       iGlobalTime:    { type: 'f', value: 0.1 }
@@ -130,7 +130,12 @@ export default class Scene {
     requestAnimationFrame(this.animate.bind(this))
   }
 
+  sendAudio(amplitude) {
+    this.uniforms.amplitude.value = amplitude;
+  }
+
   static start(view) {
     Scene.instance = new Scene(view)
+    return Scene.instance;
   }
 }

@@ -1,0 +1,33 @@
+<!doctype html>
+  <html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  </head>
+  <body>
+
+    <div id="container">
+      <!-- <video id="video" muted></video> -->
+      <video autoplay="true" controls="" id="video" loop="" muted class="player__video">
+        <source src="assets/testgl.mp4" type="video/mp4">
+      </video>
+      <fieldset>
+        <input type="range" id="heartrate" value="0" min="0" max="3" step="0.02" >
+      </fieldset>
+      <fieldset>
+        <label for="audio-control">Control by Microphone</label>
+        <input id="audio-control" type="checkbox">
+      </fieldset>
+    </div>
+    <script>
+     //  if(Hls.isSupported()) {
+     //    var video = document.getElementById('video');
+     //    var hls = new Hls();
+     //    hls.loadSource('http://localhost:8080/hls/test.m3u8');
+     //    hls.attachMedia(video);
+     //    hls.on(Hls.Events.MANIFEST_PARSED,function() {
+     //      video.play();
+     //  });
+     // }
+    </script>
+  </body>
+  </html>

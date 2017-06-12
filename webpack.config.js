@@ -2,12 +2,18 @@ var webpack = require('webpack');
 var path = require('path');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var CleanWebpackPlugin = require('clean-webpack-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 var DashboardPlugin = require('webpack-dashboard/plugin');
 
 var in_prod_env = process.env.NODE_ENV === 'production';
 
 module.exports = {
     devtool: 'source-map',
+    devServer: {
+      port: 9000
+    },
+
+
     entry: {
       main: [
         './src/scripts/main.js',
@@ -25,6 +31,10 @@ module.exports = {
         {
           test: /\.glsl$/,
           use: 'raw-loader'
+        },
+        {
+            test: /\.ejs$/,
+            use: 'ejs-loader'
         },
         {
           test: /\.s[ac]ss$/,
@@ -50,11 +60,9 @@ module.exports = {
 
     plugins: [
       new ExtractTextPlugin('[name].css'),
-
-      // new webpack.ProvidePlugin({
-      //   $: "jquery",
-      //   jQuery: "jquery"
-      // }),
+      new HtmlWebpackPlugin({
+        template: 'src/index.ejs'
+      }),
 
       new CleanWebpackPlugin(['dist'],{
         root: __dirname,
