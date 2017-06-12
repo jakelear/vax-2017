@@ -1,4 +1,4 @@
-require("../assets/testgl.mp4");
+require("../assets/cityscape.mp4");
 require("../assets/noise.png");
 
 import * as dat from './vendor/dat.gui';
