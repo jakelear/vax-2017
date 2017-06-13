@@ -2,7 +2,7 @@
   "name": "vax-2017",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/scripts/main.js",
   "scripts": {
     "dev": "webpack-dashboard -- webpack-dev-server --watch --open",
     "production": "NODE_ENV=production webpack-dashboard -- webpack-dev-server --watch --open"

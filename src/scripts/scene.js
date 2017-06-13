@@ -14,9 +14,6 @@ export default class Scene {
     this.setupGeometry()
     this.animate()
     window.addEventListener('resize', this.onWindowResize.bind(this), false)
-
-    this.range = this.container.querySelector('#heartrate')
-    this.range.addEventListener('input', this.onHeartChange.bind(this), false);
   }
 
   setupRenderer() {
@@ -79,8 +76,8 @@ export default class Scene {
     this.material = new THREE.ShaderMaterial({vertexShader, fragmentShader, uniforms: this.uniforms})
   }
 
-  onHeartChange(e) {
-    this.uniforms.amplitude.value = e.target.value;
+  sendIntensity(value) {
+    this.uniforms.amplitude.value = value;
   }
 
   getGeometrySize() {
