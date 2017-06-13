@@ -54,6 +54,7 @@ export default class Scene {
   }
 
   setupMaterial() {
+    var textureLoader = new THREE.TextureLoader();
     this.uniforms = {
       video: {
         type: 't',
@@ -66,7 +67,7 @@ export default class Scene {
 
       underlay: {
         type: 't',
-        value: THREE.ImageUtils.loadTexture("assets/noise.png")
+        value: textureLoader.load("assets/noise.png")
       },
 
       iGlobalTime:    { type: 'f', value: 0.1 }
