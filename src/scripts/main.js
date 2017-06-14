@@ -14,15 +14,6 @@ var container = document.getElementById("container");
 var scene = Scene.start(container);
 var settings;
 
-/////////////////////////////
-/////////////////////////////
-/////////////////////////////
-var audioContext = null;
-var meter = null;
-var WIDTH=500;
-var HEIGHT=50;
-var rafID = null;
-
 window.onload = function() {
   // GUI Setup
   settings = new SceneManager();
@@ -37,14 +28,14 @@ window.onload = function() {
     if (settings.microphoneControl) {
       audio.enable();
     } else {
-      scene.sendAudio(settings.intensity);
+      scene.setAmplitude(settings.intensity);
       audio.disable();
     }
   });
 
   intensity_control.onChange(function(value) {
     if (!settings.microphoneControl) {
-      scene.sendAudio(settings.intensity);
+      scene.setAmplitude(settings.intensity);
     }
 
   });

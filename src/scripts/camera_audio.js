@@ -117,7 +117,7 @@ export default class CameraAudio {
   }
 
   drawLoop(time) {
-    this.scene.sendAudio(this.meter.volume * 4);
+    this.scene.setAmplitude(this.meter.volume * 4);
     this.loop = window.requestAnimationFrame( this.drawLoop.bind(this) );
   }
 }

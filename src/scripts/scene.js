@@ -77,10 +77,6 @@ export default class Scene {
     this.material = new THREE.ShaderMaterial({vertexShader, fragmentShader, uniforms: this.uniforms})
   }
 
-  sendIntensity(value) {
-    this.uniforms.amplitude.value = value;
-  }
-
   getGeometrySize() {
     let width = window.innerWidth
     let height = window.innerHeight
@@ -128,7 +124,7 @@ export default class Scene {
     requestAnimationFrame(this.animate.bind(this))
   }
 
-  sendAudio(amplitude) {
+  setAmplitude(amplitude) {
     this.uniforms.amplitude.value = amplitude;
   }
 
