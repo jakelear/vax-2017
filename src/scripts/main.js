@@ -14,6 +14,7 @@ import CameraVideo from './camera_video';
 import rgbShift from './shaders/rgb_shift.glsl'
 import cellShading from './shaders/cell_shading.glsl'
 import videoIntensity from './shaders/video_intensity.glsl'
+import distortion from './shaders/distortion.glsl'
 
 var container = document.getElementById("container");
 var settings;
@@ -25,7 +26,7 @@ window.onload = function() {
       this.microphoneControl = false;
       this.useWebcam = false;
       this.intensity = 0.00;
-      this.shader = cellShading;
+      this.shader = distortion;
     }
   }
   settings = new Settings();
@@ -35,6 +36,7 @@ window.onload = function() {
   var intensity_control = gui.add(settings, 'intensity', 0, 2).step(0.02);
   var shader_selector   = gui.add(settings, 'shader',
     {
+      'Distortion': distortion,
       'RGB Shift': rgbShift,
       'Cell Shading': cellShading,
       'Video Intensity Visualization': videoIntensity

@@ -29,6 +29,8 @@ void main(void)
 
   vec3 col = texture2D(video, uv).xyz;
   vec3 m = vec3(.2,.1,.1);
+
+  // Use passed amplitude to determine luminosity (clamped to 0.5 because after that it looks like shit)
   float lum = clamp(0.5 - amplitude, 0.06, 0.5);
   #if 1
     g = 4.*dot(grad,grad);
