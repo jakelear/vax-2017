@@ -1,12 +1,13 @@
 import * as THREE from 'three'
 import vertexShader from './shaders/vertex.glsl'
-import fragmentShader from './shaders/fragment.glsl'
 
 export default class Scene {
-  constructor(container) {
+  constructor(container, shader) {
     this.container = container
     this.scene = new THREE.Scene()
     this.clock = new THREE.Clock();
+    this.fragmentShader = shader;
+
     this.setupRenderer()
     this.setupCamera()
     this.setupVideoTexture()
@@ -55,6 +56,7 @@ export default class Scene {
 
   setupMaterial() {
     var textureLoader = new THREE.TextureLoader();
+    let fragmentShader = this.fragmentShader;
     this.uniforms = {
       video: {
         type: 't',
@@ -121,15 +123,24 @@ export default class Scene {
     }
 
     this.renderer.render(this.scene, this.camera)
-    requestAnimationFrame(this.animate.bind(this))
+    this.raf = requestAnimationFrame(this.animate.bind(this))
   }
 
   setAmplitude(amplitude) {
     this.uniforms.amplitude.value = amplitude;
   }
 
-  static start(view) {
-    Scene.instance = new Scene(view)
+  destroy() {
+    cancelAnimationFrame(this.raf);
+    this.scene.remove(this.mesh)
+    this.scene = null;
+    this.video = null;
+    this.camera = null;
+    while (this.container.querySelector('canvas')) this.container.removeChild(this.container.querySelector('canvas'));
+  }
+
+  static start(view, shader) {
+    Scene.instance = new Scene(view, shader)
     return Scene.instance;
   }
 }
