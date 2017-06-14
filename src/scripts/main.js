@@ -8,10 +8,12 @@ import * as dat from './vendor/dat.gui';
 // Classes
 import Scene from './scene';
 import CameraAudio from './camera_audio';
+import CameraVideo from './camera_video';
 
 // Shaders
 import rgbShift from './shaders/rgb_shift.glsl'
 import cellShading from './shaders/cell_shading.glsl'
+import videoIntensity from './shaders/video_intensity.glsl'
 
 var container = document.getElementById("container");
 var settings;
@@ -21,6 +23,7 @@ window.onload = function() {
   class Settings {
     constructor() {
       this.microphoneControl = false;
+      this.useWebcam = false;
       this.intensity = 0.00;
       this.shader = rgbShift;
     }
@@ -29,8 +32,15 @@ window.onload = function() {
   var gui = new dat.GUI();
 
   var audio_control     = gui.add(settings, 'microphoneControl');
+  var webcam_control    = gui.add(settings, 'useWebcam');
   var intensity_control = gui.add(settings, 'intensity', 0, 2).step(0.02);
-  var shader_selector   = gui.add(settings, 'shader', { 'RGB Shift': rgbShift, 'Cell Shading': cellShading } );
+  var shader_selector   = gui.add(settings, 'shader',
+    {
+      'RGB Shift': rgbShift,
+      'Cell Shading': cellShading,
+      'Video Intensity Visualization': videoIntensity
+    }
+  );
   // End GUI Setup
 
   // Setup Scene
@@ -54,6 +64,15 @@ window.onload = function() {
     } else {
       scene.setAmplitude(settings.intensity);
       audio.disable();
+    }
+  });
+
+  webcam_control.onChange(function(useWebcam) {
+    if (useWebcam) {
+      var camera = new CameraVideo(scene);
+    } else {
+      var video = document.querySelector('video');
+      video.src = '/assets/cityscape.mp4';
     }
   });
 
