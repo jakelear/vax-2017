@@ -25,14 +25,13 @@ window.onload = function() {
       this.microphoneControl = false;
       this.useWebcam = false;
       this.intensity = 0.00;
-      this.shader = rgbShift;
+      this.shader = cellShading;
     }
   }
   settings = new Settings();
   var gui = new dat.GUI();
-
-  var audio_control     = gui.add(settings, 'microphoneControl');
   var webcam_control    = gui.add(settings, 'useWebcam');
+  var audio_control = gui.add(settings, 'microphoneControl');
   var intensity_control = gui.add(settings, 'intensity', 0, 2).step(0.02);
   var shader_selector   = gui.add(settings, 'shader',
     {
@@ -49,8 +48,10 @@ window.onload = function() {
   // Shader Selector
   // When shader selector is changed, instanciate a new scene using that shader
   shader_selector.onChange(function(shader) {
-    //scene.destroy();
+    // Set the new shader as the fragmentShader for the scene
     scene.fragmentShader = shader;
+
+    // Then refresh the material and geometry
     scene.setupMaterial();
     scene.updateGeometry();
   });

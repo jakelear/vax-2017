@@ -12,13 +12,6 @@ void main(void)
   vec2 uv = vUv;
   vec2 uvx = uv+vec2(EPS,0.);
   vec2 uvy = uv+vec2(0.,EPS);
-
-  vec2 ref = vec2(.5,.5);
-  vec3 col0 = texture2D(video, ref).xyz;
-  float lum0 = (col0.x+col0.y+col0.z)/3.;
-
-  bool isin = (uv.x > .5+.5*sin(iGlobalTime));
-
   vec3 tex,texx,texy;
   vec2 grad; float g=1.;
 
@@ -36,7 +29,7 @@ void main(void)
 
   vec3 col = texture2D(video, uv).xyz;
   vec3 m = vec3(.2,.1,.1);
-  float lum = (col.x+col.y+col.z)/3.;
+  float lum = clamp(0.5 - amplitude, 0.06, 0.5);
   #if 1
     g = 4.*dot(grad,grad);
     g = pow(max(0.,1.-g),30.);
