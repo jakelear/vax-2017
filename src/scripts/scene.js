@@ -130,14 +130,14 @@ export default class Scene {
     this.uniforms.amplitude.value = amplitude;
   }
 
-  destroy() {
-    cancelAnimationFrame(this.raf);
-    this.scene.remove(this.mesh)
-    this.scene = null;
-    this.video = null;
-    this.camera = null;
-    while (this.container.querySelector('canvas')) this.container.removeChild(this.container.querySelector('canvas'));
-  }
+  // destroy() {
+  //   cancelAnimationFrame(this.raf);
+  //   this.scene.remove(this.mesh)
+  //   this.scene = null;
+  //   this.video = null;
+  //   this.camera = null;
+  //   while (this.container.querySelector('canvas')) this.container.removeChild(this.container.querySelector('canvas'));
+  // }
 
   static start(view, shader) {
     Scene.instance = new Scene(view, shader)

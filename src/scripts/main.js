@@ -22,7 +22,7 @@ window.onload = function() {
     constructor() {
       this.microphoneControl = false;
       this.intensity = 0.00;
-      this.shader = cellShading;
+      this.shader = rgbShift;
     }
   }
   settings = new Settings();
@@ -39,14 +39,17 @@ window.onload = function() {
   // Shader Selector
   // When shader selector is changed, instanciate a new scene using that shader
   shader_selector.onChange(function(shader) {
-    scene.destroy();
-    scene = Scene.start(container, shader);
+    //scene.destroy();
+    scene.fragmentShader = shader;
+    scene.setupMaterial();
+    scene.updateGeometry();
   });
 
   // Audio Control Setup
   var audio = new CameraAudio(scene);
   audio_control.onChange(function(value) {
     if (settings.microphoneControl) {
+      scene.setAmplitude(0);
       audio.enable();
     } else {
       scene.setAmplitude(settings.intensity);
