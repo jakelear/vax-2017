@@ -18,6 +18,7 @@ import distortion from './shaders/distortion.glsl'
 
 var container = document.getElementById("container");
 var settings;
+var stream_poll;
 
 window.onload = function() {
   // GUI Setup
@@ -27,13 +28,18 @@ window.onload = function() {
       this.useWebcam = false;
       this.intensity = 0.00;
       this.shader = distortion;
+      this.api_key = 'AIzaSyAzd0zLCf1sEtQGvmLPuDyQeROlbSfSU08';
+      this.platform = 'youtube';
+      this.threshold = '10';
+      this.video = 'Zn9Pn1qtYpc';
+      this.enableStreamControl = false;
     }
   }
   settings = new Settings();
-  var gui = new dat.GUI();
+  var gui = new dat.GUI({  width: 300 });
   var webcam_control    = gui.add(settings, 'useWebcam');
-  var audio_control = gui.add(settings, 'microphoneControl');
-  var intensity_control = gui.add(settings, 'intensity', 0, 2).step(0.02);
+  var audio_control     = gui.add(settings, 'microphoneControl');
+  var intensity_control = gui.add(settings, 'intensity', 0, 2).step(0.02).listen();
   var shader_selector   = gui.add(settings, 'shader',
     {
       'Distortion': distortion,
@@ -42,6 +48,16 @@ window.onload = function() {
       'Video Intensity Visualization': videoIntensity
     }
   );
+
+  var stream_settings = gui.addFolder('Stream Settings');
+  stream_settings.add(settings, 'platform', {
+    'Facebook': 'facebook',
+    'YouTube': 'youtube'
+  });
+  stream_settings.add(settings, 'api_key');
+  stream_settings.add(settings, 'threshold');
+  stream_settings.add(settings, 'video');
+  var stream_toggle = stream_settings.add(settings, 'enableStreamControl');
   // End GUI Setup
 
   // Setup Scene
@@ -84,5 +100,69 @@ window.onload = function() {
       scene.setAmplitude(settings.intensity);
     }
   });
+
+  stream_toggle.onChange(function(streamControl) {
+    if (streamControl) {
+      enableStreamControl();
+    } else {
+      disableStreamControl();
+    }
+  });
+
+  var enableStreamControl = function() {
+    var url;
+    var success;
+    switch (settings.platform) {
+    case 'youtube':
+      url = `https://www.googleapis.com/youtube/v3/videos?key=${settings.api_key}&id=${settings.video}&part=statistics`;
+      success = function(results) {
+        return getYouTubeLikes(results);
+      };
+      break;
+    case 'facebook':
+      url = `https://graph.facebook.com/v2.8/${settings.video}?fields=reactions.type(LIKE).limit(0).summary(true).as(like)&access_token=${settings.api_key}`;
+      success = function(results){
+        return getFacebookLikes(results);
+      };
+      break;
+    }
+
+    var getYouTubeLikes = function(results) {
+      return results.items[0].statistics.likeCount;
+    };
+
+    var getFacebookLikes = function(results) {
+      return results.like.summary.total_count;
+    };
+
+    var intensity_per_like;
+
+    var updateLikes = function () {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var results = JSON.parse(xhr.responseText);
+          console.log(2 - (intensity_per_like * success(results)));
+          scene.setAmplitude(2 - (intensity_per_like * success(results)));
+          stream_poll = setTimeout(updateLikes, 1000);
+        }
+        else {
+            //alert('Request failed.  Returned status of ' + xhr.status);
+        }
+      };
+      xhr.send();
+    }
+
+    if (settings.api_key && settings.video && settings.threshold) {
+      intensity_per_like = (2.0 / settings.threshold); //TODO: This should use the max intensity
+      updateLikes();
+    }
+  }
+
+  var disableStreamControl = function() {
+    scene.setAmplitude(settings.intensity);
+    clearTimeout(stream_poll);
+  }
 
 }

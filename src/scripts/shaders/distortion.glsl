@@ -7,14 +7,6 @@ uniform sampler2D underlay;
 
 varying vec2 vUv;
 
-// change these values to 0.0 to turn off individual effects
-float vertJerkOpt = 1.0 * (amplitude * 3.0);
-float vertMovementOpt = 1.0 * (amplitude * 3.0);
-float bottomStaticOpt = 1.0 * (amplitude * 3.0);
-float scalinesOpt = amplitude;
-float rgbOffsetOpt = 1.0 * (amplitude * 3.0);
-float horzFuzzOpt = 1.0 * (amplitude * 3.0);
-
 // Noise generation functions borrowed from:
 // https://github.com/ashima/webgl-noise/blob/master/src/noise2D.glsl
 
@@ -86,9 +78,15 @@ float staticV(vec2 uv) {
   return (1.0-step(snoise(vec2(5.0*pow(iGlobalTime,2.0)+pow(uv.x*7.0,1.2),pow((mod(iGlobalTime,100.0)+100.0)*uv.y*0.3+3.0,staticHeight))),staticAmount))*staticStrength;
 }
 
-
 void main(void)
 {
+  // change these values to 0.0 to turn off individual effects
+  float vertJerkOpt = 1.0 * (amplitude * 3.0);
+  float vertMovementOpt = 1.0 * (amplitude * 3.0);
+  float bottomStaticOpt = 1.0 * (amplitude * 3.0);
+  float scalinesOpt = amplitude;
+  float rgbOffsetOpt = 1.0 * (amplitude * 3.0);
+  float horzFuzzOpt = 1.0 * (amplitude * 3.0);
 
   vec2 uv = vUv;
 
@@ -97,24 +95,23 @@ void main(void)
   float fuzzOffset = snoise(vec2(iGlobalTime*15.0,uv.y*80.0))*0.003;
   float largeFuzzOffset = snoise(vec2(iGlobalTime*1.0,uv.y*25.0))*0.004;
 
-    float vertMovementOn = (1.0-step(snoise(vec2(iGlobalTime*0.2,8.0)),0.4))*vertMovementOpt;
-    float vertJerk = (1.0-step(snoise(vec2(iGlobalTime*1.5,5.0)),0.6))*vertJerkOpt;
-    float vertJerk2 = (1.0-step(snoise(vec2(iGlobalTime*5.5,5.0)),0.2))*vertJerkOpt;
-    float yOffset = abs(sin(iGlobalTime)*4.0)*vertMovementOn+vertJerk*vertJerk2*0.3;
-    float y = mod(uv.y+yOffset,1.0);
-
+  float vertMovementOn = (1.0-step(snoise(vec2(iGlobalTime*0.2,8.0)),0.4))*vertMovementOpt;
+  float vertJerk = (1.0-step(snoise(vec2(iGlobalTime*1.5,5.0)),0.6))*vertJerkOpt;
+  float vertJerk2 = (1.0-step(snoise(vec2(iGlobalTime*5.5,5.0)),0.2))*vertJerkOpt;
+  float yOffset = abs(sin(iGlobalTime)*4.0)*vertMovementOn+vertJerk*vertJerk2*0.3;
+  float y = mod(uv.y+yOffset,1.0);
 
   float xOffset = (fuzzOffset + largeFuzzOffset) * horzFuzzOpt;
 
-    float staticVal = 0.0;
+  float staticVal = 0.0;
 
-    for (float y = -1.0; y <= 1.0; y += 1.0) {
-        float maxDist = 5.0/200.0;
-        float dist = y/200.0;
-      staticVal += staticV(vec2(uv.x,uv.y+dist))*(maxDist-abs(dist))*1.5;
-    }
+  for (float y =   -1.0; y <= 1.0; y += 1.0) {
+      float maxDist = 5.0/200.0;
+      float dist = y/200.0;
+    staticVal += staticV(vec2(uv.x,uv.y+dist))*(maxDist-abs(dist))*1.5;
+  }
 
-    staticVal *= bottomStaticOpt;
+  staticVal *= bottomStaticOpt;
 
   float red   =   texture2D(video,  vec2(uv.x + xOffset -0.01*rgbOffsetOpt,y)).r+staticVal;
   float green =   texture2D(video,  vec2(uv.x + xOffset,    y)).g+staticVal;
