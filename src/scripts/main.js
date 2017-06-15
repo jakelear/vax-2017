@@ -22,13 +22,24 @@ var stream_poll;
 
 window.onload = function() {
   // GUI Setup
+
+  // Add hide functionality for dat gui
+  dat.GUI.prototype.toggleHide = function() {
+    if(this.domElement.hasAttribute("hidden")) {
+      this.domElement.removeAttribute("hidden");
+    } else {
+      this.domElement.setAttribute("hidden", true);
+    }
+  };
+
+
   class Settings {
     constructor() {
       this.microphoneControl = false;
       this.useWebcam = false;
       this.intensity = 0.00;
       this.shader = distortion;
-      this.api_key = 'AIzaSyAzd0zLCf1sEtQGvmLPuDyQeROlbSfSU08';
+      this.api_key = '';
       this.platform = 'youtube';
       this.threshold = '10';
       this.video = 'Zn9Pn1qtYpc';
@@ -58,6 +69,16 @@ window.onload = function() {
   stream_settings.add(settings, 'threshold');
   stream_settings.add(settings, 'video');
   var stream_toggle = stream_settings.add(settings, 'enableStreamControl');
+
+  // Add g hotkey to toggle controls
+  window.addEventListener('keydown', function(k) {
+    switch(k.keyCode) {
+        case 71:
+          gui.toggleHide(gui);
+      }
+    }
+  );
+
   // End GUI Setup
 
   // Setup Scene
@@ -143,8 +164,12 @@ window.onload = function() {
       xhr.onload = function() {
         if (xhr.status === 200) {
           var results = JSON.parse(xhr.responseText);
-          console.log(2 - (intensity_per_like * success(results)));
-          scene.setAmplitude(2 - (intensity_per_like * success(results)));
+          console.log(intensity);
+          var intensity = 2 - (intensity_per_like * success(results);
+          if (intensity < 0) {
+            intensity = 0;
+          }
+          scene.setAmplitude(intensity);
           stream_poll = setTimeout(updateLikes, 1000);
         }
         else {
