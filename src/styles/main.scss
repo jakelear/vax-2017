@@ -27,5 +27,7 @@ canvas {
   position: fixed;
   padding: 2rem;
   right: 0;
-
+  &.hidden {
+    display: none;
+  }
 }

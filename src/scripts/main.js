@@ -179,6 +179,7 @@ window.onload = function() {
   }
 
   var disableStreamControl = function() {
+    overlay.hide();
     scene.setAmplitude(settings.intensity);
     clearTimeout(stream_poll);
   }

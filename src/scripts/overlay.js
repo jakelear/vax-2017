@@ -7,7 +7,12 @@ export default class Overlay {
   }
 
   setText(text) {
+    this.overlay.setAttribute("class", "overlay");
     this.overlay.innerHTML = text;
+  }
+
+  hide() {
+    this.overlay.setAttribute("class", "overlay hidden");
   }
 
 }
