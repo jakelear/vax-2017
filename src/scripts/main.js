@@ -7,6 +7,8 @@ import * as dat from './vendor/dat.gui';
 
 // Classes
 import Scene from './scene';
+import Settings from './settings'
+import Overlay from './overlay';
 import CameraAudio from './camera_audio';
 import CameraVideo from './camera_video';
 
@@ -22,7 +24,6 @@ var stream_poll;
 
 window.onload = function() {
   // GUI Setup
-
   // Add hide functionality for dat gui
   dat.GUI.prototype.toggleHide = function() {
     if(this.domElement.hasAttribute("hidden")) {
@@ -32,22 +33,11 @@ window.onload = function() {
     }
   };
 
-
-  class Settings {
-    constructor() {
-      this.microphoneControl = false;
-      this.useWebcam = false;
-      this.intensity = 0.00;
-      this.shader = distortion;
-      this.api_key = '';
-      this.platform = 'youtube';
-      this.threshold = '10';
-      this.video = 'Zn9Pn1qtYpc';
-      this.enableStreamControl = false;
-    }
-  }
   settings = new Settings();
+  settings.shader = distortion;
+
   var gui = new dat.GUI({  width: 300 });
+
   var webcam_control    = gui.add(settings, 'useWebcam');
   var audio_control     = gui.add(settings, 'microphoneControl');
   var intensity_control = gui.add(settings, 'intensity', 0, 2).step(0.02).listen();
@@ -78,7 +68,6 @@ window.onload = function() {
       }
     }
   );
-
   // End GUI Setup
 
   // Setup Scene
@@ -94,6 +83,9 @@ window.onload = function() {
     scene.setupMaterial();
     scene.updateGeometry();
   });
+
+  // Setup Overlay
+  var overlay = new Overlay(container);
 
   // Audio Control Setup
   var audio = new CameraAudio(scene);
@@ -163,9 +155,10 @@ window.onload = function() {
       xhr.open('GET', url);
       xhr.onload = function() {
         if (xhr.status === 200) {
-          var results = JSON.parse(xhr.responseText);
-          console.log(intensity);
-          var intensity = 2 - (intensity_per_like * success(results);
+          var results = success(JSON.parse(xhr.responseText));
+          overlay.setText(`<span>Likes on ${settings.platform}:</span> ${results}`);
+
+          var intensity = 2 - (intensity_per_like * results);
           if (intensity < 0) {
             intensity = 0;
           }
